@@ -9,21 +9,12 @@ module Impl = (
 ) => {
   let asHtmlElement: T.t => option<Dom.htmlElement> = %raw(`
     function(element) {
-      var ownerDocument = element.ownerDocument;
-
-      if (ownerDocument != null) {
-        var defaultView = ownerDocument.defaultView;
-
-        if (defaultView != null) {
-          var HTMLElement = defaultView.HTMLElement;
-
-          if (HTMLElement != null && element instanceof HTMLElement) {
-            return element;
-          }
-        }
+      if (/^HTML\w*Element$/.test(element.prototype.constructor.name)) {
+        return element
       }
     }
   `)
+  
 
   /** Unsafe cast, use [asHtmlElement] instead */
   external unsafeAsHtmlElement: T.t => Dom.htmlElement = "%identity"
